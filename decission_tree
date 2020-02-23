@@ -1,0 +1,11 @@
+solar_model=DecisionTreeRegressor(random_state=1)
+X=solar_data[['Solar Zenith Angle','Temperature','Relative Humidity']]
+y=solar_data['DHI']
+train_X, val_X, train_y, val_y = train_test_split(X, y)
+solar_model.fit(train_X,train_y)
+prediction=solar_model.predict(val_X)
+print(type(prediction))
+for i in range(len(val_y.values)):
+    print("Original Values:- ",val_y.values[i], " ","Predicted Values:- ",prediction[i])
+    
+print("Square of root mean square value is "+ str(sqrt(mean_absolute_error(val_y,prediction))))
