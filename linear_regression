@@ -1,3 +1,4 @@
+3IMPORT PACKAGES
 import pandas as pd
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
@@ -6,45 +7,68 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import r2_score
 import seaborn as sns
 from math import sqrt
+
+#READ_FILES
 data=pd.read_csv(r"I:\all dwnld\Desktop\project related\Solar Data set\45388_22.85_80.75_2010.csv")
 fil=data['DHI'] != 0
 mask=data['Month'].isin([11,12,1]) 
 data=data[mask & fil]
+
 data1=pd.read_csv(r"I:\all dwnld\Desktop\project related\Solar Data set\45388_22.85_80.75_2011.csv")
 fil=data1['DHI'] != 0
 mask=data1['Month'].isin([11,12,1])
 data1=data1[mask & fil]
+
 data2=pd.read_csv(r"I:\all dwnld\Desktop\project related\Solar Data set\45388_22.85_80.75_2012.csv")
 mask=data2['Month'].isin([11,12,1]) 
 fil=data2['DHI'] != 0
 data2=data2[mask & fil]
+
 data3=pd.read_csv(r"I:\all dwnld\Desktop\project related\Solar Data set\45388_22.85_80.75_2013.csv")
 mask=data3['Month'].isin([11,12,1])
 fil=data3['DHI'] != 0
 data3=data3[mask & fil]
+
 data4=pd.read_csv(r"I:\all dwnld\Desktop\project related\Solar Data set\45388_22.85_80.75_2014.csv")
 mask=data4['Month'].isin([11,12,1])
 fil=data4['DHI'] != 0
 data4=data4[mask & fil]
+
+#CONCATE FILES
 solar_data=pd.concat([data,data1,data2,data3,data4])
+
 solar_data=data[['DHI','Temperature','Solar Zenith Angle','Pressure','Relative Humidity','Wind Speed']]
+
+#MODEL
 solar_model=linear_model.LinearRegression() 
+
 X=solar_data[['Solar Zenith Angle','Temperature','Relative Humidity']]
+
 y=solar_data['DHI']
+
 train_X, val_X, train_y, val_y = train_test_split(X, y)
+
 solar_model.fit(train_X,train_y)
+
 prediction=solar_model.predict(val_X)
+
 print(type(prediction))
+
 for i in range(len(val_y.values)):
     print("Original Values:- ",val_y.values[i], " ","Predicted Values:- ",prediction[i])
+    
 print("Square of root mean square value is "+ str(sqrt(mean_absolute_error(val_y,prediction))))
-solar_data=pd.concat([data,data1,data2,data3])
-solar_data=data[['DHI','Temperature','Solar Zenith Angle','Pressure','Relative Humidity','Wind Speed']]
+
+#CORRELATION_MATRIX
 sns.heatmap(solar_data.corr())
+
 r2_score(val_y,prediction)
-print("Square of root mean square value is "+ str(mean_absolute_error(val_y,prediction)))
+
 prediction=solar_model.predict(train_X)
+
 print(type(prediction))
+
 for i in range(len(train_y.values)):
     print("Original Values:- ",train_y.values[i], " ","Predicted Values:- ",prediction[i])
+    
  print("Square of root mean square value is "+ str(sqrt(mean_absolute_error(train_y,prediction))))
